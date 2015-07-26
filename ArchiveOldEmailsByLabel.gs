@@ -9,10 +9,7 @@ function archiveOldEmailsByLabel(label, delayDays, excludeLabel) {
 
   search = search + "'";
 
-  var autoArchived = GmailApp.getUserLabelByName("auto-archived");
-  if (autoArchived == null) {
-    autoArchived = GmailApp.createLabel("auto-archived");
-  }
+  var autoArchived = ensureLabel("auto-archived");
 
   var batch = GmailApp.search(search, 0, batchSize);
   while (batch != null && batch.length > 0) {
@@ -20,6 +17,10 @@ function archiveOldEmailsByLabel(label, delayDays, excludeLabel) {
     GmailApp.moveThreadsToArchive(batch);
     batch = GmailApp.search(search, 0, batchSize);
   }
+}
+
+function ensureLabel(name) {
+  return GmailApp.getUserLabelByName(name) || Gmail.createLabel(name);
 }
 
 function main() {
